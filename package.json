@@ -1,0 +1,34 @@
+{
+  "name": "gulp-pug-template-concat",
+  "version": "1.0.0",
+  "description": "Compiles Pug (Jade) client side templates into a single file containing template functions",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/drfisher/gulp-pug-template-concat.git"
+  },
+  "keywords": [
+    "gulp",
+    "pug",
+    "jade",
+    "client",
+    "template",
+    "concat"
+  ],
+  "author": "Pavel Rybin",
+  "license": "MIT",
+  "dependencies": {
+    "through": "*",
+    "gulp-util": "*"
+  },
+  "peerDependencies": {
+    "pug": "*"
+  },
+  "bugs": {
+    "url": "https://github.com/drfisher/gulp-pug-template-concat/issues"
+  },
+  "homepage": "https://github.com/drfisher/gulp-pug-template-concat#readme"
+}
