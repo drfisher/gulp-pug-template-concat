@@ -1,5 +1,5 @@
 # gulp-pug-template-concat
-Compiles Pug templates single file containing template functions.  For projects small enough that they don't require AMD or CommonJS loaders.
+Compiles Pug templates single file containing template functions. Supports commonJS.
 
 Based on [gulp-jade-templates-concat](https://github.com/nStonehouse/gulp-jade-template-concat) by Nicholas Stonehouse.
 
@@ -19,7 +19,13 @@ gulp.task("client-templates", function(){
         .pipe(pug({
             client: true
         })
-        .pipe(pugConcat('mytemplates.js', {templateVariable:"templates"}))
+        .pipe(pugConcat('mytemplates.js', {
+            // uncomment to change templateVariable name. "templates" by default
+            // templateVariable: "templates"
+            
+            // uncomment following line to export templates in commonJS manner
+            // commonJS: true        
+        }))
         .pipe(gulp.dest('build/templates/'))
 });
 ```
