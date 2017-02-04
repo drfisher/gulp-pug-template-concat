@@ -3,10 +3,12 @@ const PluginError = gutil.PluginError;
 const through = require('through');
 
 function pluginError (message) {
-  return new PluginError('gulp-jade-template-concat', message);
+  return new PluginError('gulp-pug-template-concat', message);
 }
 
 module.exports = function pugConcat(fileName, _opts) {
+  _opts = _opts || {};
+
   if (!fileName) {
     throw pluginError('Missing fileName');
   }
@@ -29,12 +31,18 @@ module.exports = function pugConcat(fileName, _opts) {
     var splittedTemplate = file.contents.toString().split('function template');
 
     pugHelpers = pugHelpers || splittedTemplate[0];
-    concatString += `${filename}:function ${splittedTemplate[1]},\n`;
+    concatString += `${JSON.stringify(filename)}:function ${splittedTemplate[1]},\n`;
   }
 
   function end () {
     // wrap concatenated string in template object
-    var templateString = `var ${_opts.templateVariable}=(function(){\n${pugHelpers}\n;return {\n${concatString}}})();`;
+    var templateString;
+    if(_opts.commonJS) {
+      templateString = 'module.exports'
+    } else {
+      templateString = `var ${_opts.templateVariable || 'templates'}`;
+    }
+    templateString += `=(function(){\n${pugHelpers}\n;return {\n${concatString}}})();`;
 
     this.queue(new gutil.File({
       path: fileName,
