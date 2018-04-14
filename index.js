@@ -1,3 +1,4 @@
+const path = require('path');
 const gutil = require('gulp-util');
 const PluginError = gutil.PluginError;
 const through = require('through');
@@ -6,11 +7,11 @@ function pluginError (message) {
   return new PluginError('gulp-pug-template-concat', message);
 }
 
-module.exports = function pugConcat(fileName, _opts) {
+module.exports = function pugConcat(targetFileName, _opts) {
   _opts = _opts || {};
 
-  if (!fileName) {
-    throw pluginError('Missing fileName');
+  if (!targetFileName) {
+    throw pluginError('Missing targetFileName');
   }
 
   var concatString = '';
@@ -24,14 +25,14 @@ module.exports = function pugConcat(fileName, _opts) {
       return this.emit('error', pluginError('Streaming not supported'));
     }
 
-    // isolate filename from full path
-    var filename = file.path.replace(file.base, '').replace('.js', '');
+    // isolate file name from full path
+    var fileName = file.path.split(path.sep).pop().replace('.js', '');
 
-    // split pug helpers and a template function and replace template name with filename
+    // split pug helpers and a template function and replace template name with file name
     var splittedTemplate = file.contents.toString().split('function template');
 
     pugHelpers = pugHelpers || splittedTemplate[0];
-    concatString += `${JSON.stringify(filename)}:function ${splittedTemplate[1]},\n`;
+    concatString += `${JSON.stringify(fileName)}:function ${splittedTemplate[1]},\n`;
   }
 
   function end () {
@@ -45,7 +46,7 @@ module.exports = function pugConcat(fileName, _opts) {
     templateString += `=(function(){\n${pugHelpers}\n;return {\n${concatString}}})();`;
 
     this.queue(new gutil.File({
-      path: fileName,
+      path: targetFileName,
       contents: new Buffer(templateString)
     }));
 
@@ -53,4 +54,4 @@ module.exports = function pugConcat(fileName, _opts) {
   }
 
   return through(write, end);
-}
+};
